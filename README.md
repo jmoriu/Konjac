@@ -35,8 +35,9 @@ The language corresponding to the speaker and the language after translation are
 * faster-whisper
 * google-cloud-texttospeech
 * openai
-　　You need to set up the authentication information by referring to the following URL.
-　　https://cloud.google.com/docs/authentication/application-default-credentials?hl=ja
+
+ You need to set up the authentication information by referring to the following URL.
+ https://cloud.google.com/docs/authentication/application-default-credentials?hl=ja
 
 # Installation
  
