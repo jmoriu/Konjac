@@ -1,0 +1,7 @@
+faster-whisper
+google-cloud-texttospeech
+numpy
+openai
+PyYAML
+simpleaudio
+SpeechRecognition
