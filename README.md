@@ -1,4 +1,4 @@
-# Multilingual AMA platform "Konjac"
+# Multilingual tranlate real-time "Konjac"
 
 Crypto has an AMA (Ask Me Anything) community-building initiative for each of its products.
 The creator of the product shares an overview of the product and its progress with the community, followed by a question-and-answer session.
