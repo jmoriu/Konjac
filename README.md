@@ -45,6 +45,10 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+![スクリーンショット 2023-06-19 194500](https://github.com/jmoriu/Konjac/assets/136766894/7a7d05b1-4e37-4c11-b0de-b8e2d54d7434)
+
+
 If you want to translate what you speak, type speaker.you are the listener, type listener.
 
 For languages, use the first two letters of the language. See language.json for details.
