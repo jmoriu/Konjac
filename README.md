@@ -32,6 +32,7 @@ punjabi, afrikaans, gujarati
 * threading
 
  You need to set up the authentication information by referring to the following URL.
+ 
  https://cloud.google.com/docs/authentication/application-default-credentials?hl=ja
 
 # Installation
@@ -45,6 +46,7 @@ pip install -r requirements.txt
 python main.py
 ```
 If you want to translate what you speak, type speaker.you are the listener, type listener.
+
 For languages, use the first two letters of the language. See language.json for details.
 
 
