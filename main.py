@@ -45,11 +45,11 @@ from_lang = 'en'
 to_lang = 'ja'
 transcription = ['']
 translated_list = ['']
+wav_num = 0
 
 # translate text to any language
-def translate_text():
+def translate_text_realtime():
     to_language = languages['languages'][to_lang]
-    print(to_language)
     while True:
         if translate_Flag == True:
             text = original_text.get()
@@ -58,7 +58,7 @@ def translate_text():
                         model = 'gpt-3.5-turbo',
                         messages  = [
                                     {'role': 'system', 'content': f'You are an excellent translator and very good at translating from English to {to_language}.'},
-                                    {'role': 'user', 'content': f'Writing speculation other than the content when translating constitutes spreading rumors and can lead to litigation issues. Never write about anything other than the given text.Please use a polite tone of voice when translating.'},
+                                    {'role': 'user', 'content': f'Writing speculation other than the content when translating constitutes spreading rumors and can lead to litigation issues. Never write about anything other than the given text.Please use a polite tone of voice when translating.If there is no subject, omit the subject.'},
                                     {'role': 'user', 'content': f'Translate the following sentences English to {to_language} :{text}. Please answer only with your translation.'}
                                     ] , 
                         max_tokens  = 1000,
@@ -67,18 +67,51 @@ def translate_text():
                         temperature = 0,
                 )   
                 response = completion.choices[0].message.content
-                print(response)
                 translated_text.put(response)
         else:
             text = original_text.get()
-            translated_text.put(text)            
+            translated_text.put(text)
+        sleep(0.1)  
+
+# translate text to any language to print on terminal
+def translate_text():
+    to_language = languages['languages'][to_lang]
+    text = ''
+    for line in transcription:
+        text += line
+
+    if text != "":
+        completion = openai.ChatCompletion.create(
+                model = 'gpt-3.5-turbo',
+                messages  = [
+                            {'role': 'system', 'content': f'You are an excellent translator and very good at translating from English to {to_language}.'},
+                            {'role': 'user', 'content': f'Writing speculation other than the content when translating constitutes spreading rumors and can lead to litigation issues. Never write about anything other than the given text.Please use a polite tone of voice when translating.If there is no subject, omit the subject.'},
+                            {'role': 'user', 'content': f'Translate the following sentences English to {to_language} :{text}. Please answer only with your translation.'}
+                            ] , 
+                max_tokens  = 1000,
+                n           = 1,
+                stop        = None,
+                temperature = 0,
+        )
+        response = completion.choices[0].message.content
+        os.system('cls' if os.name == 'nt' else 'clear')
+        split_text = response.split('。')
+        for line in split_text:
+            print(line) 
+
+def teanslate_text_to_terminal():
+    while True:
+        translate_text()
+        sleep(5)
 
 # text to speech
 def text_to_speech():
+    wav_num = 0
     to_language = languages['speech_Language'][to_lang]
     while True:
         text = translated_text.get()
         if text != "":
+            wav_num += 1
             # Using Google Cloud Text-to-Speech API
             client = tts.TextToSpeechClient()
             synthesis_input = tts.SynthesisInput(text=text)
@@ -99,11 +132,12 @@ def text_to_speech():
 
             # play audio
             with tempfile.TemporaryDirectory() as tmp:
-                with open(f'{tmp}/output.wav', 'wb') as f:
+                with open(f'{tmp}/{wav_num}.wav', 'wb') as f:
                     f.write(response.audio_content)
-                    wav_obj = simpleaudio.WaveObject.from_wave_file(f'{tmp}/output.wav')
+                    wav_obj = simpleaudio.WaveObject.from_wave_file(f'{tmp}/{wav_num}.wav')
                     play_obj = wav_obj.play()
                     play_obj.wait_done()
+            sleep(0.1)
 
 def speak_to_translated_voice():
     print('speak_to_translated_voice')
@@ -223,11 +257,13 @@ def recognize():
 
 def listen_to_translated_voice():
     th_recognize = threading.Thread(target=recognize, daemon=True)
-    th_translatetext = threading.Thread(target=translate_text, daemon=True)
+    th_translatetext = threading.Thread(target=translate_text_realtime, daemon=True)
     th_speechtext = threading.Thread(target=text_to_speech, daemon=True)
+    th_translate = threading.Thread(target=teanslate_text_to_terminal, daemon=True)
     th_recognize.start()
     th_translatetext.start()
     th_speechtext.start()
+    th_translate.start()
 
     while True:
         with sc.get_microphone(id=str(sc.default_speaker().name), include_loopback=True).recorder(samplerate=SAMPLE_RATE, channels=1) as mic:
