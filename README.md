@@ -44,6 +44,9 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+If you want to translate what you speak, type speaker.you are the listener, type listener.
+For languages, use the first two letters of the language. See language.json for details.
+
 
 # Author
 * Jodaiichi Moriuchi
